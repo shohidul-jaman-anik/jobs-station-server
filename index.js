@@ -9,18 +9,15 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.q66zrl2.mongodb.net/?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverApi: ServerApiVersion.v1,
-});
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xv30r7f.mongodb.net/?retryWrites=true&w=majority`;
 
-const run = async () => {
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+async function run() {
   try {
-    const db = client.db("jobbox");
-    const userCollection = db.collection("user");
-    const jobCollection = db.collection("job");
+    client.connect();
+    const userCollection = client.db("jobs-station").collection("users");
+    const jobCollection = client.db("jobs-station").collection("jobs");
 
     app.post("/user", async (req, res) => {
       const user = req.body;
@@ -153,7 +150,7 @@ const run = async () => {
 run().catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello From Jobs Station!");
 });
 
 app.listen(port, () => {
